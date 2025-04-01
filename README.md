@@ -41,7 +41,7 @@ The platform is composed of:
 ### Clone the Repository
 
 ```bash
-git clone git@github.com:2Candis-Agriculture6-0/PointCloudViewer.git
+git clone https://github.com/2Candis-Agriculture6-0/PointCloudViewer.git
 cd PointCloudViewer
 git lfs pull
 ```
