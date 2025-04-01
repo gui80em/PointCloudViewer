@@ -69,6 +69,10 @@ Go to ```demo/config.js``` and change the API_URL from where you are going to de
 docker-compose up
 ```
 
+### Demo
+
+Demo is available on ```localhost:3000/viewer/demo/elpuig.html```
+
 ## 📊 Sensor API Endpoints
 
 - `GET /sensors` - Retrieve all sensors
