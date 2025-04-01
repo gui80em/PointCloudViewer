@@ -9,8 +9,7 @@ const concat = require('gulp-concat');
 const connect = require('gulp-connect');
 const {watch} = gulp;
 
-const {createExamplesPage} = require("./src/tools/create_potree_page");
-const {createGithubPage} = require("./src/tools/create_github_page");
+
 const {createIconsPage} = require("./src/tools/create_icons_page");
 
 
@@ -84,15 +83,6 @@ gulp.task('webserver', gulp.series(async function() {
 	});
 }));
 
-// gulp.task('examples_page', async function(done) {
-// 	await Promise.all([
-// 		createExamplesPage(),
-// 		createGithubPage(),
-// 	]);
-
-// 	done();
-// });
-
 gulp.task('icons_viewer', async function(done) {
 	await createIconsPage();
 
@@ -164,7 +154,7 @@ gulp.task("shaders", async function(){
 
 gulp.task('build', 
 	gulp.series(
-		gulp.parallel("workers", "lazylibs", "shaders", "icons_viewer", "examples_page"),
+		gulp.parallel("workers", "lazylibs", "shaders", "icons_viewer"),
 		async function(done){
 			gulp.src(paths.html).pipe(gulp.dest('build/potree'));
 
