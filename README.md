@@ -39,7 +39,7 @@ The platform is composed of:
 - MongoDB
 - Redis
 - Docker
-- git-lfs
+- [git-lfs](https://git-lfs.com)
 
 ### Clone the Repository
 
