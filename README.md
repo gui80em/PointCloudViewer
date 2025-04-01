@@ -7,7 +7,7 @@
 
 This repository contains the source code for the system presented in our paper:  
 **"Digital Twin in Precision Agriculture: A Web-Based System for 3D Point Cloud Multi-Vegetative Index Visualization and Real-Time Sensor Data"**  
-(Universitat de València, 2023)
+(Universitat de València, 2025)
 
 The system introduces a comprehensive web platform to monitor agricultural fields using a geolocated digital twin, 3D point cloud visualization, and real-time sensor data integration.
 
