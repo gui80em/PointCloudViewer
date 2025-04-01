@@ -30,7 +30,6 @@ The platform is composed of:
 - Potree-based 3D viewer
 - Three.js-based first-person explorer
 - MongoDB and Redis backend
-- Kubernetes orchestration
 
 ## 🚀 Getting Started
 
@@ -39,7 +38,6 @@ The platform is composed of:
 - Node.js >= 16
 - MongoDB
 - Redis
-- Kubernetes + Helm (for deployment)
 - Docker
 
 ### Clone the Repository
