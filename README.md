@@ -19,7 +19,6 @@ The system introduces a comprehensive web platform to monitor agricultural field
 - **Historical Sensor Analytics** with interactive Chart.js visualizations
 - **Immersive First-Person View** developed in Three.js for field exploration
 - **Efficient Data Handling** using Redis (for caching) and MongoDB (for storage)
-- **Kubernetes Deployment** for scalability, autoscaling, and load balancing
 
 ## 🏗️ System Architecture
 
