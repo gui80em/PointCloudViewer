@@ -51,8 +51,6 @@ cd PointCloudViewer
 
 ```bash
 npm install
-cd api
-npm install
 ```
 
 
