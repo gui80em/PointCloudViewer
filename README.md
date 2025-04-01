@@ -51,18 +51,15 @@ cd PointCloudViewer
 
 ```bash
 npm install
-cd api
-npm install
 ```
 
-
-### Setup pointclouds
+### Setup pointclouds (if you want to use demo pointcloud skip this phase)
 
 Put your pointclouds on a new directoy /pointclouds.
 
 Go to ```demo/index.js``` and change the routes for the demo pointclouds
 
-### Setup API_URL
+### Setup API_URL (if you want to use demo url skip this phase)
 
 Go to ```demo/config.js``` and change the API_URL from where you are going to deploy the API
 
