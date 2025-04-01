@@ -93,7 +93,7 @@ If you use this codebase or system in your research, please cite our paper (not 
 
 ## 👥 Authors
 
-- Andoni Salcedo-Navarro
+- [Andoni Salcedo-Navarro](https://github.com/AndoniSalcedo)
 - Guillem Montalban-Faet
 - Jaume Segura-Garcia
 - Miguel Garcia-Pineda
