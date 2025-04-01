@@ -35,8 +35,6 @@ The platform is composed of:
 ### Prerequisites
 
 - Node.js >= 16
-- MongoDB
-- Redis
 - Docker
 - [git-lfs](https://git-lfs.com)
 
