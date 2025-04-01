@@ -51,13 +51,16 @@ cd precision-agriculture-digital-twin
 
 ```bash
 npm install
+cd api
+npm install
 ```
+
 
 ### Setup pointclouds
 
 Put your pointclouds on a new directoy /pointclouds.
 
-Go to ```index.js``` and change the routes for the demo pointclouds
+Go to ```demo/index.js``` and change the routes for the demo pointclouds
 
 ### Setup API_URL
 

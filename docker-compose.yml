@@ -14,7 +14,7 @@ services:
   api:
     container_name: api
     build: 
-      context: ./PointCloudViewer/api
+      context: ./api
       dockerfile: Dockerfile
     environment:
       - MONGODB_URL=mongodb://database:27017/sensorsdb
