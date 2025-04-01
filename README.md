@@ -30,7 +30,6 @@ The platform is composed of:
 - Potree-based 3D viewer
 - Three.js-based first-person explorer
 - MongoDB and Redis backend
-- Kubernetes orchestration
 
 ## 🚀 Getting Started
 
@@ -39,7 +38,6 @@ The platform is composed of:
 - Node.js >= 16
 - MongoDB
 - Redis
-- Kubernetes + Helm (for deployment)
 - Docker
 
 ### Clone the Repository
@@ -55,29 +53,20 @@ cd precision-agriculture-digital-twin
 npm install
 ```
 
-### Configure Environment
+### Setup pointclouds
 
-Create a `.env` file based on `.env.example` with the correct MongoDB and Redis URIs.
+Put your pointclouds on a new directoy /pointclouds.
 
-### Run Development Server
+Go to ```index.js``` and change the routes for the demo pointclouds
 
-```bash
-npm run dev
-```
+### Setup API_URL
+
+Go to ```demo/config.js``` and change the API_URL from where you are going to deploy the API
 
 ### Build and Deploy (Docker)
 
 ```bash
-docker build -t digital-twin-agriculture .
-docker run -p 3000:3000 digital-twin-agriculture
-```
-
-### Kubernetes Deployment
-
-Use the included Helm chart to deploy on your cluster:
-
-```bash
-helm install digital-twin ./helm-chart
+docker-compose up
 ```
 
 ## 📊 Sensor API Endpoints
