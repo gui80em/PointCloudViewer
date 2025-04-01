@@ -46,7 +46,7 @@ function generateSensorReading(sensor) {
 
 function startCronJob() {
   // Schedule the job to run every 5 minutes (*/5 * * * *)
-  cron.schedule('*/1 * * * *', async () => {
+  cron.schedule('*/5 * * * *', async () => {
     console.log('Cron job: Creating sensor readings...');
     try {
       // Retrieve all sensors.

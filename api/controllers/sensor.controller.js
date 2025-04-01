@@ -1,6 +1,5 @@
 // controllers/sensorController.js
 const Sensor = require('../models/Sensor');
-const SensorReading = require('../models/SensorReading');
 
 exports.getSensors = async (req, res) => {
   try {
@@ -36,15 +35,4 @@ exports.getSensorById = async (req, res) => {
   }
 };
 
-exports.getLatestSensorReading = async (req, res) => {
-  try {
-    const latestReading = await SensorReading.findOne({ sensorId: req.params.id })
-      .sort({ createdAt: -1 });
-    if (!latestReading) {
-      return res.status(404).json({ error: 'No readings found for this sensor' });
-    }
-    res.json(latestReading);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+

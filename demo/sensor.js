@@ -1,72 +1,91 @@
-function getRandomSensorIcon() {
-    const icons = [
-        { icon: "fa-thermometer-half", title: "Temperature" },
-        { icon: "fa-tint", title: "Humidity" },
-        { icon: "fa-cloud", title: "Atmospheric Pressure" },
-        { icon: "fa-leaf", title: "Ground Status" },
-        { icon: "fa-sun", title: "Solar" },
-        { icon: "fa-bolt", title: "Wind" },
-        { icon: "fa-fire", title: "Fire" },
-        { icon: "fa-water", title: "Water" }
-    ];
-    const randomIndex = Math.floor(Math.random() * icons.length);
-    const chosen = icons[randomIndex];
-    return `<i class="fa ${chosen.icon}" title="${chosen.title}"></i>`;
+const API_URL = window.API_URL
+
+async function fetchSensors() {
+
+    const bb = window.pointcloudBB;
+    const min = bb.min;
+    const max = bb.max;
+    const response = await axios.get(
+        `${API_URL}/api/sensors?minX=${min.x}&maxX=${max.x}&minY=${min.y}&maxY=${max.y}&minZ=${min.z}&maxZ=${max.z}`
+    );
+
+    return response.data;
+
 }
 
+function createSensorAnnotation(sensor, position) {
 
-function createSensorAnnotation(sensorId, position) {
-    let randomIconHtml = getRandomSensorIcon();
-    let elTitle = $(`
+    let iconHtml = sensor.types.map(type => {
+        return `<i class="fa ${type.icon}" title="${type.title}"></i>`
+    }).join(' ');
+
+    let dataHtml = sensor.types.map(type => {
+        let className = type.title.toLowerCase().replace(/\s+/g, '');
+        return `<p>${type.title}: <span class="${className}">--</span>${type.unit}</p>`;
+    }).join('');
+    
+    let elSensor = $(`
         <span>
-            <span class="sensor-header" style="display: flex; justify-content: center; padding: 5px 5px; align-items: center">
-                ${randomIconHtml}
+            <span class="sensor-header" style="display: flex; justify-content: center; padding: 5px; align-items: center; gap: 5px;">
+                ${iconHtml}
             </span>
             <div name="data">
-                <p>Temperatura: <span class="temperature">--</span>°C</p>
-                <p>Humedad: <span class="humidity">--</span>%</p>
-                <p>Presión Atm: <span class="pressure">--</span> hPa</p>
-                <p><a  href="graph.html">See more...</a></p>
+                ${dataHtml}
+                <p><a href="graph.html?sensor=${sensor._id}">See more...</a></p>
             </div>
         </span>
     `);
 
-    elTitle.find("div[name=data]").hide();
+    elSensor.find("div[name=data]").hide();
 
-    elTitle.find("span.sensor-header").click(function (e) {
-
+    // Toggle the extra data when the header is clicked.
+    elSensor.find("span.sensor-header").click(function (e) {
         if (!$(e.target).is('i.fa-refresh')) {
-            elTitle.find("div[name=data]").toggle();
+            elSensor.find("div[name=data]").toggle();
         }
     });
 
-    elTitle.find("i.fa-refresh").click(function (e) {
-        e.stopPropagation();
-        updateSensorData(sensorId, elTitle);
-    });
+    elSensor.toString = () => `Sensor ${sensor._id}`;
 
-    elTitle.toString = () => `Sensor ${sensorId}`;
-
-    updateSensorData(sensorId, elTitle);
-
+    // Fetch and update the sensor data immediately.
+    updateSensorData(sensor._id, elSensor);
+    setInterval(() => {
+        updateSensorData(sensor._id, elSensor);
+    }, 60000);
     return new Potree.Annotation({
         position: position,
-        title: elTitle
+        title: elSensor
+    });
+}
+
+
+async function updateSensorData(sensorId, elSensor) {
+    try {
+      const response = await axios.get(`${API_URL}/api/real/sensors/${sensorId}`);
+      const reading = response.data;
+      const data = reading.data;
+      
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {      
+          const className = key.toLowerCase().replace(/\s+/g, '');
+          elSensor.find(`span.${className}`).text(data[key]);
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching sensor data for sensor ${sensorId}:`, error);
+    }
+  }
+  
+async function loadSensors() {
+
+    const sensors = await fetchSensors()
+
+    sensors.forEach(sensor => {
+        const position = new THREE.Vector3(sensor.location.x, sensor.location.y, 1);
+        potreeViewer.scene.annotations.add(createSensorAnnotation(sensor, position));
     });
 
 }
 
-function updateSensorData(sensorId, elTitle) {
-
-    const temperature = (20 + Math.random() * 10).toFixed(1);
-    const humidity = (50 + Math.random() * 20).toFixed(1);
-    const pressure = (1000 + Math.random() * 10).toFixed(1);
-
-    elTitle.find("span.temperature").text(temperature);
-    elTitle.find("span.humidity").text(humidity);
-    elTitle.find("span.pressure").text(pressure);
-
-}
-
-window.createSensorAnnotation = createSensorAnnotation
+window.loadSensors = loadSensors
 

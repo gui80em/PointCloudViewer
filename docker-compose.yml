@@ -1,0 +1,29 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./:/usr/share/nginx/html/viewer
+    depends_on:
+      - api
+  api:
+    container_name: api
+    build: 
+      context: ./PointCloudViewer/api
+      dockerfile: Dockerfile
+    environment:
+      - MONGODB_URL=mongodb://database:27017/sensorsdb
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  database:
+    container_name: mongo
+    image: mongo:latest
+    restart: always

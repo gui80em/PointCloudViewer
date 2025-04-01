@@ -86,11 +86,13 @@ class MaterialSelector extends HTMLElement {
   
     setupOptions() {
       //const options = [ "rgb" ];
-
+      // const options = [
+      //        "rgba", "re", "r", "g", "cig", "cire", "ndvi", "ndre", "rvi",
+      //        "gndvi", "psri", "sci", "ngrdi", "cvi", "elevation", "indices"
+      //    ];
       const options = [
-             "rgba", "re", "r", "g", "cig", "cire", "ndvi", "ndre", "rvi",
-             "gndvi", "psri", "sci", "ngrdi", "cvi", "elevation", "indices"
-         ];
+          "rgb", "ndvi"
+      ];
 
       const attributeSelection = this.shadowRoot.querySelector('#optMaterial');
       options.forEach(option => {

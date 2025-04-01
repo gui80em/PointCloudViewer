@@ -5,17 +5,26 @@ const min = { x: 730799.2656555176, y: 4383421.701904297, z: 0 };
 const max = { x: 731108.456237793, y: 4383730.892486572, z: 309.1905822753906 };
 
 const possibleTypes = [
-  { icon: "fa-thermometer-half", title: "Temperature" },
-  { icon: "fa-tint", title: "Humidity" },
-  { icon: "fa-cloud", title: "Atmospheric Pressure" },
-  { icon: "fa-leaf", title: "Ground Status" },
-  { icon: "fa-sun", title: "Solar" },
-  { icon: "fa-bolt", title: "Wind" },
-  { icon: "fa-water", title: "Water" }
+  { icon: "fa-thermometer-half", title: "Temperature", unit: "°C" },
+  { icon: "fa-tint", title: "Humidity", unit: "%" },
+  { icon: "fa-cloud", title: "Atmospheric Pressure", unit: "hPa" },
+  { icon: "fa-leaf", title: "Ground Status", unit: "" },
+  { icon: "fa-sun", title: "Solar", unit: "W/m²" },
+  { icon: "fa-bolt", title: "Wind", unit: "m/s" },
+  { icon: "fa-water", title: "Water", unit: "mm" }
 ];
 
-function getRandom(min, max) {
-  return Math.random() * (max - min) + min;
+function getRandom(minVal, maxVal) {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  const num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  const center = (minVal + maxVal) / 2;
+  const sigma = (maxVal - minVal) / 6;
+  let value = center + num * sigma;
+  if (value < minVal) value = minVal;
+  if (value > maxVal) value = maxVal;
+  return value;
 }
 
 async function initSensors() {
@@ -37,13 +46,10 @@ async function initSensors() {
         z: getRandom(min.z, max.z),
       };
 
-      // Randomly decide if the sensor will have one or two types
       const numTypes = Math.floor(Math.random() * 2) + 1;
-      // Shuffle possibleTypes and pick the first numTypes entries
       const shuffled = possibleTypes.sort(() => 0.5 - Math.random());
       const types = shuffled.slice(0, numTypes);
 
-      // Create a sensor name (e.g., "Sensor 1", "Sensor 2", …)
       const name = `Sensor ${i + 1}`;
 
       sensorsToInsert.push({

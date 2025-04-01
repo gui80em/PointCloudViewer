@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const SensorTypeSchema = new mongoose.Schema({
   title: String,
   icon: String,
+  unit: String,
 });
 
 const SensorSchema = new mongoose.Schema({

@@ -1,4 +1,4 @@
-function loadPotree(pointcloud_file, visible_pointcloud = "rgb", element_id = "potree_render_area") {
+function loadPotree(pointcloud_file, pointcloud_name = "rgb", element_id = "potree_render_area") {
     window.potreeViewer = new Potree.Viewer(document.getElementById(element_id), {
         useDefaultRenderLoop: false
     });
@@ -15,11 +15,12 @@ function loadPotree(pointcloud_file, visible_pointcloud = "rgb", element_id = "p
     });
 
     return new Promise((resolve, reject) => {
-        Potree.loadPointCloud(pointcloud_file, "rgb", function (e) {
+        Potree.loadPointCloud(pointcloud_file, pointcloud_name, function (e) {
             let scene = potreeViewer.scene;
             let pointcloud = e.pointcloud;
 
-            pointcloud.visible = pointcloud.name === visible_pointcloud;
+            pointcloud.visible = true;
+            pointcloud.name = pointcloud_name
 
             scene.addPointCloud(e.pointcloud);
             pointcloud.position.z = 0;
@@ -29,11 +30,8 @@ function loadPotree(pointcloud_file, visible_pointcloud = "rgb", element_id = "p
             window.toMap = proj4(pointcloud.projection, mapProjection);
             window.toScene = proj4(mapProjection, pointcloud.projection);
 
-            let bb = potreeViewer.getBoundingBox();
-
-            console.log(bb)
-            proj4(pointcloud.projection, mapProjection, bb.min.toArray());
-            proj4(pointcloud.projection, mapProjection, bb.max.toArray());
+            window.pointcloudBB = potreeViewer.getBoundingBox();
+            //window.pointcloudBB = pointcloud.pcoGeometry.tightBoundingBox
 
             let boxCenter = pointcloud.pcoGeometry.tightBoundingBox.getCenter(new THREE.Vector3());
             window.globalCenter = boxCenter.clone().add(pointcloud.position);
@@ -42,6 +40,57 @@ function loadPotree(pointcloud_file, visible_pointcloud = "rgb", element_id = "p
         });
     });
 }
+
+function loadAdditionalPointCloud(pointcloud_file, pointcloud_name = "additional", visible = false) {
+    return new Promise((resolve, reject) => {
+        Potree.loadPointCloud(pointcloud_file, pointcloud_name, (e) => {
+            let scene = window.potreeViewer.scene;
+            let pointcloud = e.pointcloud;
+
+            pointcloud.visible = visible;
+            pointcloud.name = pointcloud_name;
+            
+            if (!window.pointcloudBB || !window.globalCenter) {
+                console.warn("No se ha definido el bounding box (window.pointcloudBB) o el globalCenter del pointcloud base.");
+                resolve();
+                return;
+            }
+
+
+            let addBox = pointcloud.pcoGeometry.tightBoundingBox.clone();
+            let addSize = new THREE.Vector3();
+            addBox.getSize(addSize);
+
+            // 3. Calculamos la escala que iguala el tamaño con la nube base
+            let baseBox = window.pointcloudBB.clone();
+            let baseSize = new THREE.Vector3();
+            baseBox.getSize(baseSize);
+
+            let scaleX = baseSize.x / addSize.x;
+            let scaleY = baseSize.y / addSize.y;
+            let scaleZ = baseSize.z / addSize.z;
+
+            let uniformScale = Math.min(scaleX, scaleY, scaleZ);
+            pointcloud.scale.set(uniformScale, uniformScale, uniformScale);
+
+            let addCenterOriginal = addBox.getCenter(new THREE.Vector3());
+            let scaledAddCenter = addCenterOriginal.clone().multiplyScalar(uniformScale);
+
+            let offset = new THREE.Vector3().subVectors(window.globalCenter, scaledAddCenter);
+            pointcloud.position.copy(offset);
+
+            pointcloud.rotation.z = THREE.Math.degToRad(75);
+            pointcloud.position.x += 250
+            pointcloud.position.y -= 30
+            pointcloud.position.z = -5
+
+            scene.addPointCloud(pointcloud);
+
+            resolve();
+        });
+    });
+}
+
 
 
 function loadTexture(texture_file, visible = false) {
@@ -66,30 +115,12 @@ function loadTexture(texture_file, visible = false) {
                 box.getSize(size);
                 const center = new THREE.Vector3();
                 box.getCenter(center);
-
                 const baseOffset = center.z - (size.z / 2);
-
                 gltf.scene.name = "texture"
-
                 gltf.scene.position.set(globalCenter.x, globalCenter.y, -baseOffset);
-
                 potreeViewer.scene.scene.add(gltf.scene);
-
                 gltf.scene.visible = visible
-
-                //TODO: skip
                 window.textureBB = box.clone();
-
-                if (window.toMap) {
-                    let minGeo = window.toMap.forward([box.min.x, box.min.y]);
-                    let maxGeo = window.toMap.forward([box.max.x, box.max.y]);
-                    window.textureGeoBB = {
-                        minLon: minGeo[0],
-                        minLat: minGeo[1],
-                        maxLon: maxGeo[0],
-                        maxLat: maxGeo[1]
-                    };
-                }
 
                 setCameraToTextureTopSideView()
 
@@ -109,44 +140,41 @@ function loadTexture(texture_file, visible = false) {
 async function loadOrthophoto(orthophoto_file) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
-        textureLoader.load(
-            orthophoto_file,
-            (texture) => {
+        textureLoader.load(orthophoto_file, (texture) => {
+            if (!window.textureBB) {
+                console.error("Texture bounding box is not available.");
+                reject("No texture bounding box.");
+                return;
+            }
 
-                if (!window.textureBB) {
-                    console.error("Texture bounding box is not available.");
-                    reject("No texture bounding box.");
-                    return;
-                }
-
-                const size = new THREE.Vector3();
-                window.textureBB.getSize(size);
-                const center = new THREE.Vector3();
-                window.textureBB.getCenter(center);
+            const size = new THREE.Vector3();
+            window.textureBB.getSize(size);
+            const center = new THREE.Vector3();
+            window.textureBB.getCenter(center);
 
 
-                const geometry = new THREE.PlaneGeometry(size.x, size.y);
+            const geometry = new THREE.PlaneGeometry(size.x, size.y);
 
-                const material = new THREE.MeshBasicMaterial({
-                    map: texture,
-                    side: THREE.DoubleSide
-                });
+            const material = new THREE.MeshBasicMaterial({
+                map: texture,
+                side: THREE.DoubleSide
+            });
 
-                const plane = new THREE.Mesh(geometry, material);
+            const plane = new THREE.Mesh(geometry, material);
 
-                if (window.globalCenter) {
-                    plane.position.set(window.globalCenter.x, window.globalCenter.y, 1);
-                } else {
-                    plane.position.copy(center);
-                }
+            if (window.globalCenter) {
+                plane.position.set(window.globalCenter.x, window.globalCenter.y, 1);
+            } else {
+                plane.position.copy(center);
+            }
 
-                potreeViewer.scene.scene.add(plane);
+            potreeViewer.scene.scene.add(plane);
 
-                window.orthophotoPlane = plane;
-                plane.visible = false;
+            window.orthophotoPlane = plane;
+            plane.visible = false;
 
-                resolve();
-            },
+            resolve();
+        },
             undefined,
             (error) => {
                 console.error("Error loading orthophoto:", error);
@@ -293,5 +321,6 @@ window.hiddenTexture = hiddenTexture
 window.visibleOrthophoto = visibleOrthophoto;
 window.hiddenOrthophoto = hiddenOrthophoto;
 window.loadPotree = loadPotree
+window.loadAdditionalPointCloud = loadAdditionalPointCloud
 window.loadTexture = loadTexture
 window.loadOrthophoto = loadOrthophoto;

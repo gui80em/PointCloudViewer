@@ -8,7 +8,6 @@ const connectDB = async () => {
   try {
     await mongoose.connect(MONGODB_URL, { });
     console.log('MongoDB connected');
-    //mongoose.connection.once("")
     // Initialize sensors if none exist
     await initSensors();
   } catch (err) {
