@@ -43,8 +43,8 @@ The platform is composed of:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/precision-agriculture-digital-twin.git
-cd precision-agriculture-digital-twin
+git clone git@github.com:2Candis-Agriculture6-0/PointCloudViewer.git
+cd PointCloudViewer
 ```
 
 ### Install Dependencies
