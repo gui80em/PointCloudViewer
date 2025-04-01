@@ -23,7 +23,7 @@ The system introduces a comprehensive web platform to monitor agricultural field
 
 ## 🏗️ System Architecture
 
-![System Architecture](figs/system-workflow.png)
+![System Architecture](figs/component-diagram.png)
 
 The platform is composed of:
 - A RESTful API (Node.js + Express)
