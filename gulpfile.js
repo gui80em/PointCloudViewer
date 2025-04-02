@@ -160,8 +160,6 @@ gulp.task('build',
 
 			gulp.src(paths.resources).pipe(gulp.dest('build/potree/resources'));
 
-			gulp.src(["LICENSE"]).pipe(gulp.dest('build/potree'));
-
 			done();
 		}
 	)

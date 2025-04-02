@@ -7,7 +7,7 @@
 
 This repository contains the source code for the system presented in our paper:  
 **"Digital Twin in Precision Agriculture: A Web-Based System for 3D Point Cloud Multi-Vegetative Index Visualization and Real-Time Sensor Data"**  
-(Universitat de València, 2023)
+(Universitat de València, 2025)
 
 The system introduces a comprehensive web platform to monitor agricultural fields using a geolocated digital twin, 3D point cloud visualization, and real-time sensor data integration.
 
@@ -19,7 +19,6 @@ The system introduces a comprehensive web platform to monitor agricultural field
 - **Historical Sensor Analytics** with interactive Chart.js visualizations
 - **Immersive First-Person View** developed in Three.js for field exploration
 - **Efficient Data Handling** using Redis (for caching) and MongoDB (for storage)
-- **Kubernetes Deployment** for scalability, autoscaling, and load balancing
 
 ## 🏗️ System Architecture
 
@@ -36,15 +35,13 @@ The platform is composed of:
 ### Prerequisites
 
 - Node.js >= 16
-- MongoDB
-- Redis
 - Docker
 - [git-lfs](https://git-lfs.com)
 
 ### Clone the Repository
 
 ```bash
-git clone git@github.com:2Candis-Agriculture6-0/PointCloudViewer.git
+git clone https://github.com/2Candis-Agriculture6-0/PointCloudViewer.git
 cd PointCloudViewer
 git lfs pull
 ```
@@ -96,7 +93,7 @@ If you use this codebase or system in your research, please cite our paper (not 
 
 ## 👥 Authors
 
-- Andoni Salcedo-Navarro
+- [Andoni Salcedo-Navarro](https://github.com/AndoniSalcedo)
 - Guillem Montalban-Faet
 - Jaume Segura-Garcia
 - Miguel Garcia-Pineda
