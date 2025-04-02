@@ -92,7 +92,6 @@ function loadAdditionalPointCloud(pointcloud_file, pointcloud_name = "additional
 }
 
 
-
 function loadTexture(texture_file, visible = false) {
     const loader = new THREE.GLTFLoader();
     const dracoLoader = new THREE.DRACOLoader();
@@ -151,7 +150,6 @@ async function loadOrthophoto(orthophoto_file) {
             window.textureBB.getSize(size);
             const center = new THREE.Vector3();
             window.textureBB.getCenter(center);
-
 
             const geometry = new THREE.PlaneGeometry(size.x, size.y);
 

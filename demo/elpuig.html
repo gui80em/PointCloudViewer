@@ -113,6 +113,7 @@
 	<script type="module" src="celsium.js"></script>
 	<script type="module" src="sensor.js"></script>
 	<script type="module" src="controls.js"></script>
+	<script type="module" src="utils.js"></script>
 
 	<script type="module">
 		async function init() {
@@ -123,7 +124,14 @@
 			await loadPotree("../pointclouds/elpuig/geo/metadata.json");
 
 			await loadTexture('../pointclouds/elpuig/texturing/odm_textured_model_geo.glb');
-			await loadOrthophoto('../pointclouds/elpuig/orthophoto/odm_orthophoto.tif');
+
+			supportsTiff(async (support) => {
+				if(support){
+					await loadOrthophoto('../pointclouds/elpuig/orthophoto/odm_orthophoto.tif');
+				}else{
+					await loadOrthophoto('../pointclouds/elpuig/orthophoto/odm_orthophoto.png');
+				}
+			})
 
 			await loadSensors();
 
