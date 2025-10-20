@@ -1,4 +1,4 @@
-export default [
+module.exports = [
 	{
 		input: 'src/Potree.js',
 		treeshake: false,
@@ -33,4 +33,4 @@ export default [
 			sourcemap: false
 		}
 	}
-]
+];
