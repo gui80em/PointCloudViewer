@@ -4,24 +4,28 @@ services:
     container_name: nginx
     restart: always
     ports:
-      - "3000:80"
+      - "3000:80"    
+      - "443:443"  
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./:/usr/share/nginx/html/viewer
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./:/usr/share/nginx/html/viewer:ro        # estáticos
+      - ./certs:/etc/nginx/certs:ro                     # tls.crt / tls.key
     depends_on:
       - api
+
   api:
     container_name: api
-    build: 
+    build:
       context: ./api
       dockerfile: Dockerfile
     environment:
       - MONGODB_URL=mongodb://database:27017/sensorsdb
       - PORT=8080
     ports:
-      - "8080:8080"
+      - "8080:8080"  
     depends_on:
       - database
+
   database:
     container_name: mongo
     image: mongo:latest
